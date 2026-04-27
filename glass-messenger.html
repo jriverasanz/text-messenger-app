@@ -99,6 +99,23 @@
             align-items: center;
         }
 
+        .add-contact-btn {
+            background: rgba(151, 73, 156, 0.1);
+            color: #97499c;
+            border: 1px solid rgba(151, 73, 156, 0.2);
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .add-contact-btn:hover {
+            background: rgba(151, 73, 156, 0.2);
+            transform: translateY(-1px);
+        }
+
         .sidebar-title {
             font-size: 18px;
             font-weight: 600;
@@ -595,7 +612,7 @@
     <div class="glass-container">
         <div class="header">
             <div class="header-left">
-                <img src="Upscale VoIP logo.png" alt="Upscale VoIP" class="logo">
+                <img src="logo.png" alt="Upscale VoIP" class="logo">
                 <h1>Glass Messenger</h1>
             </div>
             <button class="new-chat-btn" onclick="openNewChat()" onmousedown="console.log('New chat mousedown')">+ New Message</button>
@@ -605,6 +622,7 @@
             <div class="sidebar">
                 <div class="sidebar-header">
                     <div class="sidebar-title">Messages</div>
+                    <button class="add-contact-btn" onclick="openAddContact()" onmousedown="console.log('Add contact mousedown')">+ Add Contact</button>
                 </div>
                 
                 <div class="tabs">
@@ -672,6 +690,31 @@
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeNewChat()" onmousedown="console.log('Cancel mousedown')">Cancel</button>
                 <button class="btn btn-primary" onclick="createNewChat()" onmousedown="console.log('Create mousedown')">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div class="modal" id="addContactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Contact</h2>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contact Name</label>
+                <input type="text" class="form-input" id="addContactName" placeholder="Enter contact name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="text" class="form-input" id="addContactPhone" placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email (Optional)</label>
+                <input type="email" class="form-input" id="addContactEmail" placeholder="Enter email address">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAddContact()" onmousedown="console.log('Cancel add contact mousedown')">Cancel</button>
+                <button class="btn btn-primary" onclick="addNewContact()" onmousedown="console.log('Add contact mousedown')">Add Contact</button>
             </div>
         </div>
     </div>
@@ -781,6 +824,36 @@
                     e.preventDefault();
                     console.log('Create chat button clicked');
                     createNewChat();
+                });
+            }
+
+            // Setup add contact modal buttons
+            const addContactCancelBtn = document.querySelector('#addContactModal .btn-secondary');
+            if (addContactCancelBtn) {
+                addContactCancelBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Cancel add contact button clicked');
+                    closeAddContact();
+                });
+            }
+
+            const addContactBtn = document.querySelector('#addContactModal .btn-primary');
+            if (addContactBtn) {
+                addContactBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Add contact button clicked');
+                    addNewContact();
+                });
+            }
+
+            // Setup add contact modal backdrop clicks
+            const addContactModal = document.getElementById('addContactModal');
+            if (addContactModal) {
+                addContactModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        console.log('Add contact modal backdrop clicked');
+                        closeAddContact();
+                    }
                 });
             }
 
@@ -1073,19 +1146,80 @@
             }
 
             // Create new conversation
-            const newConv = {
-                id: phone,
-                phone: phone,
+            const newConversation = {
+                id: Date.now().toString(),
                 name: name,
+                phone: phone,
                 lastMessage: 'Start a conversation...',
-                lastTime: Math.floor(Date.now() / 1000),
-                messages: []
+                time: 'Just now',
+                unread: 0
             };
 
-            conversations.unshift(newConv);
+            conversations.unshift(newConversation);
             renderConversations();
-            selectConversation(phone);
+            selectConversation(newConversation.id);
             closeNewChat();
+        }
+
+        // Contact Management
+        function openAddContact() {
+            console.log('Opening add contact modal');
+            const modal = document.getElementById('addContactModal');
+            if (modal) {
+                modal.classList.add('active');
+                alert('Add contact modal opened! Contact management is working.');
+            } else {
+                alert('Add contact modal not found!');
+            }
+        }
+
+        function closeAddContact() {
+            console.log('Closing add contact modal');
+            document.getElementById('addContactModal').classList.remove('active');
+            document.getElementById('addContactName').value = '';
+            document.getElementById('addContactPhone').value = '';
+            document.getElementById('addContactEmail').value = '';
+        }
+
+        function addNewContact() {
+            const name = document.getElementById('addContactName').value.trim();
+            const phone = document.getElementById('addContactPhone').value.trim();
+            const email = document.getElementById('addContactEmail').value.trim();
+
+            if (!name) {
+                alert('Please enter a contact name');
+                return;
+            }
+
+            if (!phone) {
+                alert('Please enter a phone number');
+                return;
+            }
+
+            console.log('Adding new contact:', name, phone);
+            alert('Adding contact: ' + name + ' (' + phone + ')! Contact management is working.');
+
+            // Check if contact already exists
+            let existing = contacts.find(c => c.phone === phone);
+            if (existing) {
+                alert('Contact with this phone number already exists!');
+                return;
+            }
+
+            // Create new contact
+            const newContact = {
+                id: Date.now().toString(),
+                name: name,
+                phone: phone,
+                email: email
+            };
+
+            contacts.unshift(newContact);
+            renderContacts();
+            closeAddContact();
+            
+            // Switch to contacts tab to show the new contact
+            switchTab('contacts');
         }
 
         function messageContact(phone, name) {
