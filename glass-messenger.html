@@ -15,34 +15,34 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
             height: 100vh;
             overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            background: #ffffff;
         }
 
         .glass-container {
             height: 100vh;
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.1);
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: #97499c;
             padding: 20px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(151, 73, 156, 0.2);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
         }
 
         .header h1 {
@@ -54,8 +54,7 @@
         }
 
         .new-chat-btn {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 12px 24px;
@@ -68,7 +67,7 @@
         }
 
         .new-chat-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
@@ -83,19 +82,18 @@
 
         .sidebar {
             width: 320px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(151, 73, 156, 0.05);
+            border: 1px solid rgba(151, 73, 156, 0.1);
             border-radius: 24px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(151, 73, 156, 0.08);
             overflow: hidden;
         }
 
         .sidebar-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(151, 73, 156, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -104,13 +102,12 @@
         .sidebar-title {
             font-size: 18px;
             font-weight: 600;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: #97499c;
         }
 
         .tabs {
             display: flex;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(151, 73, 156, 0.1);
         }
 
         .tab {
@@ -122,20 +119,20 @@
             border: none;
             font-size: 14px;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
+            color: #666;
             border-bottom: 2px solid transparent;
             transition: all 0.3s ease;
         }
 
         .tab.active {
-            color: white;
-            border-bottom-color: rgba(255, 255, 255, 0.8);
-            background: rgba(255, 255, 255, 0.1);
+            color: #97499c;
+            border-bottom-color: #97499c;
+            background: rgba(151, 73, 156, 0.05);
         }
 
         .tab:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
+            color: #97499c;
+            background: rgba(151, 73, 156, 0.03);
         }
 
         .tab-content {
@@ -176,34 +173,32 @@
             border-radius: 16px;
             cursor: pointer;
             margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(151, 73, 156, 0.03);
+            border: 1px solid rgba(151, 73, 156, 0.08);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .conversation-item:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(151, 73, 156, 0.08);
             transform: translateX(4px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(151, 73, 156, 0.1);
         }
 
         .conversation-item.active {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            background: rgba(151, 73, 156, 0.12);
+            border-color: #97499c;
+            box-shadow: 0 8px 24px rgba(151, 73, 156, 0.15);
         }
 
         .conversation-name {
             font-weight: 600;
-            color: white;
+            color: #333;
             margin-bottom: 6px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .conversation-preview {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -211,7 +206,7 @@
 
         .conversation-time {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #999;
             float: right;
         }
 
@@ -224,9 +219,8 @@
             border-radius: 16px;
             cursor: pointer;
             margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(151, 73, 156, 0.03);
+            border: 1px solid rgba(151, 73, 156, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -234,9 +228,9 @@
         }
 
         .contact-item:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(151, 73, 156, 0.08);
             transform: translateX(4px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(151, 73, 156, 0.1);
         }
 
         .contact-info {
@@ -245,64 +239,60 @@
 
         .contact-name {
             font-weight: 600;
-            color: white;
+            color: #333;
             margin-bottom: 4px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .contact-phone {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
         }
 
         .message-btn {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
+            background: #97499c;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: none;
             padding: 8px 16px;
             border-radius: 12px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(151, 73, 156, 0.2);
         }
 
         .message-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #823d87;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(151, 73, 156, 0.3);
         }
 
         .chat-area {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(151, 73, 156, 0.02);
+            border: 1px solid rgba(151, 73, 156, 0.08);
             border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(151, 73, 156, 0.05);
             overflow: hidden;
         }
 
         .chat-header {
             padding: 20px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(151, 73, 156, 0.08);
+            background: rgba(151, 73, 156, 0.03);
         }
 
         .chat-contact {
             font-weight: 600;
-            color: white;
+            color: #333;
             font-size: 18px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .chat-phone {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
             margin-top: 4px;
         }
 
@@ -359,33 +349,32 @@
             border-radius: 20px;
             font-size: 14px;
             line-height: 1.5;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
         .message.sent .message-bubble {
-            background: rgba(255, 255, 255, 0.9);
-            color: #1a1a1a;
+            background: #97499c;
+            color: white;
             border-bottom-right-radius: 4px;
         }
 
         .message.received .message-bubble {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e9ecef;
             border-bottom-left-radius: 4px;
         }
 
         .message-time {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #999;
             margin-top: 6px;
         }
 
         .message-input-container {
             padding: 20px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(151, 73, 156, 0.08);
+            background: rgba(151, 73, 156, 0.02);
         }
 
         .message-input-wrapper {
@@ -397,32 +386,30 @@
         .message-input {
             flex: 1;
             padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: white;
+            border: 1px solid rgba(151, 73, 156, 0.15);
             border-radius: 24px;
             resize: none;
             font-size: 14px;
             outline: none;
             max-height: 120px;
-            color: white;
+            color: #333;
             transition: all 0.3s ease;
         }
 
         .message-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: #999;
         }
 
         .message-input:focus {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.15);
+            border-color: #97499c;
+            box-shadow: 0 0 0 3px rgba(151, 73, 156, 0.1);
         }
 
         .send-btn {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
+            background: #97499c;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: none;
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -432,17 +419,17 @@
             justify-content: center;
             font-size: 18px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(151, 73, 156, 0.2);
         }
 
         .send-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #823d87;
             transform: scale(1.05);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(151, 73, 156, 0.3);
         }
 
         .send-btn:disabled {
-            background: rgba(255, 255, 255, 0.1);
+            background: #ccc;
             cursor: not-allowed;
             transform: scale(1);
         }
@@ -453,7 +440,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
         }
 
         .empty-state-icon {
@@ -470,7 +457,7 @@
 
         .empty-state-subtext {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #999;
         }
 
         .modal {
@@ -480,8 +467,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -492,14 +478,13 @@
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: white;
+            border: 1px solid rgba(151, 73, 156, 0.1);
             padding: 32px;
             border-radius: 24px;
             width: 420px;
             max-width: 90%;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 16px 48px rgba(151, 73, 156, 0.15);
         }
 
         .modal-header {
@@ -509,8 +494,7 @@
         .modal-title {
             font-size: 20px;
             font-weight: 600;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: #333;
         }
 
         .form-group {
@@ -522,29 +506,28 @@
             margin-bottom: 8px;
             font-size: 14px;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
+            color: #333;
         }
 
         .form-input {
             width: 100%;
             padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: white;
+            border: 1px solid rgba(151, 73, 156, 0.15);
             border-radius: 12px;
             font-size: 14px;
             outline: none;
-            color: white;
+            color: #333;
             transition: all 0.3s ease;
         }
 
         .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: #999;
         }
 
         .form-input:focus {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.15);
+            border-color: #97499c;
+            box-shadow: 0 0 0 3px rgba(151, 73, 156, 0.1);
         }
 
         .modal-actions {
@@ -565,42 +548,40 @@
         }
 
         .btn-primary {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
+            background: #97499c;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(151, 73, 156, 0.2);
         }
 
         .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #823d87;
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(151, 73, 156, 0.3);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e9ecef;
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
+            background: #e9ecef;
+            color: #333;
         }
 
         .loading {
             text-align: center;
             padding: 40px;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
         }
 
         .spinner {
             display: inline-block;
             width: 24px;
             height: 24px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-top-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e9ecef;
+            border-top-color: #97499c;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -613,7 +594,10 @@
 <body>
     <div class="glass-container">
         <div class="header">
-            <h1>Glass Messenger</h1>
+            <div class="header-left">
+                <img src="Upscale VoIP logo.png" alt="Upscale VoIP" class="logo">
+                <h1>Glass Messenger</h1>
+            </div>
             <button class="new-chat-btn" onclick="openNewChat()" onmousedown="console.log('New chat mousedown')">+ New Message</button>
         </div>
 
