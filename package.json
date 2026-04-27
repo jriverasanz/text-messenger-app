@@ -1,7 +1,7 @@
 {
-  "name": "upscale-voip-messenger",
+  "name": "upscale-text-messenger",
   "version": "1.0.0",
-  "description": "Upscale VoIP Glass Messenger - Modern text messaging application with RingLogix API integration",
+  "description": "Upscale Text Messenger - Modern SMS text messaging application with contact management and RingLogix API integration",
   "main": "glass-messenger.html",
   "scripts": {
     "start": "python -m http.server 8000",
@@ -10,16 +10,15 @@
     "deploy": "echo 'Deploy files to web server'"
   },
   "keywords": [
-    "messaging",
+    "text-messaging",
     "sms",
     "ringlogix",
     "contacts",
     "chat",
-    "upscale-voip",
+    "messaging",
     "glass-messenger",
-    "sip",
     "communication",
-    "pwa"
+    "contact-management"
   ],
   "author": "WebPhone Team",
   "license": "MIT",
