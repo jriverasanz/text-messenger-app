@@ -1,0 +1,30 @@
+{
+  "name": "webphone",
+  "version": "1.0.0",
+  "description": "A professional web-based VoIP phone application with WebRTC support",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "devv": "python -m http.server 8000",
+    "start": "python -m http.server 8000",
+    "serve": "npx serve . -p 8000",
+    "build": "echo 'No build process needed for vanilla JS project'",
+    "deploy": "echo 'Deploy files to web server'"
+  },
+  "keywords": [
+    "voip",
+    "webrtc",
+    "phone",
+    "sip",
+    "communication",
+    "pwa"
+  ],
+  "author": "WebPhone Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

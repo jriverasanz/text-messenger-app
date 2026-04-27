@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RingLogix Messenger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0e14;
+    --s1: #111318;
+    --s2: #181b23;
+    --s3: #1e2230;
+    --s4: #252a3a;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #3b82f6;
+    --accent-dim: rgba(59,130,246,0.15);
+    --accent2: #8b5cf6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --r: 10px;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+    height: 52px;
+    background: var(--s1);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .topbar-brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-brand::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .spacer { flex: 1; }
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--s2);
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+  }
+  .status-dot.ok { background: var(--green); }
+  .status-dot.err { background: var(--red); }
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 8px;
+    width: 32px; height: 32px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .icon-btn:hover { background: var(--s3); color: var(--text); border-color: var(--border2); }
+
+  /* ── Layout ── */
+  .app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--s1);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-head {
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+  }
+  .new-btn {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .new-btn:hover { background: #2563eb; }
+  .conv-scroll {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .conv-scroll::-webkit-scrollbar { width: 4px; }
+  .conv-scroll::-webkit-scrollbar-track { background: transparent; }
+  .conv-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .conv-item {
+    padding: 11px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+    position: relative;
+  }
+  .conv-item:hover { background: var(--s2); }
+  .conv-item.active {
+    background: var(--s3);
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+  }
+  .conv-row1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+  .conv-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .conv-time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .conv-preview {
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .type-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    background: var(--s4);
+    color: var(--text3);
+  }
+  .type-tag.mms { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .no-convs {
+    padding: 20px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  /* ── Chat panel ── */
+  .chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .chat-head {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--s1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .chat-head-info { flex: 1; }
+  .chat-to {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .chat-from-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .chat-from-label span { color: var(--text2); }
+
+  /* ── Messages ── */
+  .msgs-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .msgs-area::-webkit-scrollbar { width: 4px; }
+  .msgs-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .msg-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .msg-group.out { align-items: flex-end; }
+  .msg-group.in { align-items: flex-start; }
+  .bubble {
+    max-width: 68%;
+    padding: 9px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .bubble.out {
+    background: var(--accent2);
+    color: #fff;
+    border-bottom-right-radius: 3px;
+  }
+  .bubble.in {
+    background: var(--s3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 3px;
+  }
+  .msg-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .empty-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text3);
+  }
+  .empty-icon {
+    width: 48px; height: 48px;
+    border: 1.5px solid var(--border2);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .empty-chat p {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* ── Compose ── */
+  .compose-area {
+    padding: 14px 16px;
+    background: var(--s1);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .attach-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--s2);
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .attach-bar .rm-attach {
+    margin-left: auto;
+    cursor: pointer;
+    color: var(--red);
+    font-size:13px;
+    background: none;
+    border: none;
+    line-height: 1;
+  }
+  .compose-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .attach-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 8px;
+    width: 38px; height: 38px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .attach-btn:hover { background: var(--s3); border-color: var(--border2); }
+  .msg-input {
+    flex: 1;
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 9px 14px;
+    resize: none;
+    height: 38px;
+    max-height: 120px;
+    outline: none;
+    transition: border-color 0.15s;
+    line-height: 1.4;
+  }
+  .msg-input:focus { border-color: var(--accent); }
+  .msg-input::placeholder { color: var(--text3); }
+  .send-btn {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    width: 38px; height: 38px;
+    cursor: pointer;
+    font-size: 17px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .send-btn:hover { background: #2563eb; }
+  .send-btn:disabled { background: var(--s4); color: var(--text3); cursor: not-allowed; }
+  #fileInput { display: none; }
+
+  /* ── Settings modal ── */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--s2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 28px;
+    width: 420px;
+    max-width: 95vw;
+  }
+  .modal-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .field input {
+    width: 100%;
+    background: var(--s1);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--text3); }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .btn-primary {
+    flex: 1;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    font-family: var(--sans);
+    font-size:13px;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-secondary {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--sans);
+    font-size: 13px;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--s3); }
+
+  /* ── New conv modal ── */
+  .new-conv-modal {
+    background: var(--s2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 26px;
+    width: 360px;
+    max-width: 95vw;
+  }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--s3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    z-index: 999;
+    max-width: 320px;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.ok { border-color: var(--green); color: var(--green); }
+  #toast.err { border-color: var(--red); color: var(--red); }
+
+  /* ── Loading state ── */
+  .loading-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    padding: 8px 16px;
+  }
+  .spinner {
+    width: 12px; height: 12px;
+    border: 1.5px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Scrollbar global ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-brand">RingLogix Messenger</div>
+  <div class="spacer"></div>
+  <div class="status-pill">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusTxt">not configured</span>
+  </div>
+  <button class="icon-btn" onclick="openSettings()" title="Settings" style="margin-left:10px">&#9881;</button>
+  <button class="icon-btn" onclick="loadConversations()" title="Refresh all" style="margin-left:6px">&#8635;</button>
+</div>
+
+<!-- Main -->
+<div class="app-body">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-title">Conversations</span>
+      <button class="new-btn" onclick="openNewConv()">+ New</button>
+    </div>
+    <div class="conv-scroll" id="convList">
+      <div class="no-convs">configure PBX to load</div>
+    </div>
+  </div>
+
+  <!-- Chat panel -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="empty-chat" id="emptyChat">
+      <div class="empty-icon">&#9993;</div>
+      <p>select or start a conversation</p>
+      <p style="font-size:11px;margin-top:4px">configure PBX via &#9881; above</p>
+    </div>
+
+    <div id="activeChat" style="display:none;flex-direction:column;height:100%">
+      <div class="chat-head">
+        <div class="chat-head-info">
+          <div class="chat-to" id="chatToNum"></div>
+          <div class="chat-from-label">from: <span id="chatFromNum"></span></div>
+        </div>
+        <span class="type-tag" id="chatTypeTag">SMS</span>
+        <button class="icon-btn" onclick="refreshActive()" title="Refresh messages">&#8635;</button>
+        <button class="icon-btn" onclick="deleteConv()" title="Delete conversation" style="color:var(--red)">&#10005;</button>
+      </div>
+
+      <div class="msgs-area" id="msgsArea"></div>
+
+      <div class="compose-area">
+        <div class="attach-bar" id="attachBar" style="display:none">
+          <span>&#128206;</span>
+          <span id="attachName"></span>
+          <span id="attachSize" style="color:var(--text3)"></span>
+          <button class="rm-attach" onclick="clearAttach()">&#10005;</button>
+        </div>
+        <div class="compose-row">
+          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach image/file (MMS)">&#128206;</button>
+          <input type="file" id="fileInput" accept="image/*,video/*,audio/*" onchange="handleFile(this)" />
+          <textarea class="msg-input" id="msgInput" placeholder="Type a message… (Enter to send, Shift+Enter for newline)" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMsg()">&#10148;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <div class="modal-title">// PBX Connection</div>
+    <div class="field">
+      <label>API Base URL</label>
+      <input id="cfgUrl" placeholder="https://api.ringlogix.com/pbx/v1" />
+    </div>
+    <div class="field">
+      <label>Bearer Token</label>
+      <input id="cfgToken" type="password" placeholder="your-access-token" />
+    </div>
+    <div class="field">
+      <label>Domain</label>
+      <input id="cfgDomain" placeholder="yourdomain.com" />
+    </div>
+    <div class="field">
+      <label>Your User / Extension</label>
+      <input id="cfgUser" placeholder="1001" />
+    </div>
+    <div class="field">
+      <label>Default From Number</label>
+      <input id="cfgFrom" placeholder="+15555550100" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
+      <button class="btn-primary" onclick="saveSettings()">Save &amp; Connect</button>
+    </div>
+  </div>
+</div>
+
+<!-- New conversation modal -->
+<div class="modal-bg" id="newConvModal">
+  <div class="new-conv-modal">
+    <div class="modal-title">// New Conversation</div>
+    <div class="field">
+      <label>Destination Number</label>
+      <input id="ncTo" placeholder="+15555550199" />
+    </div>
+    <div class="field">
+      <label>From Number (optional override)</label>
+      <input id="ncFrom" placeholder="Uses default from settings" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeNewConv()">Cancel</button>
+      <button class="btn-primary" onclick="startConv()">Start</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+  var cfg = { url: '', token: '', domain: '', user: '', from: '' };
+  var convs = [];
+  var active = null;
+  var pendingFile = null;
+  var toastTimer = null;
+
+  /* ── Config ── */
+  function loadCfg() {
+    try {
+      var s = localStorage.getItem('rlx2_cfg');
+      if (s) { cfg = Object.assign(cfg, JSON.parse(s)); populateSettings(); validateCfg(); }
+    } catch(e) {}
+  }
+  function populateSettings() {
+    document.getElementById('cfgUrl').value = cfg.url || '';
+    document.getElementById('cfgToken').value = cfg.token || '';
+    document.getElementById('cfgDomain').value = cfg.domain || '';
+    document.getElementById('cfgUser').value = cfg.user || '';
+    document.getElementById('cfgFrom').value = cfg.from || '';
+  }
+  function saveSettings() {
+    cfg.url = document.getElementById('cfgUrl').value.trim().replace(/\/+$/, '');
+    cfg.token = document.getElementById('cfgToken').value.trim();
+    cfg.domain = document.getElementById('cfgDomain').value.trim();
+    cfg.user = document.getElementById('cfgUser').value.trim();
+    cfg.from = document.getElementById('cfgFrom').value.trim();
+    try { localStorage.setItem('rlx2_cfg', JSON.stringify(cfg)); } catch(e) {}
+    closeSettings();
+    validateCfg();
+    toast('Settings saved — loading conversations…', true);
+    loadConversations();
+  }
+  function validateCfg() {
+    var ok = cfg.url && cfg.token;
+    var dot = document.getElementById('statusDot');
+    var txt = document.getElementById('statusTxt');
+    dot.className = 'status-dot' + (ok ? ' ok' : '');
+    txt.textContent = ok ? cfg.domain || 'connected' : 'not configured';
+  }
+  function openSettings() { populateSettings(); document.getElementById('settingsModal').classList.add('open'); }
+  function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+
+  /* ── New conv ── */
+  function openNewConv() { document.getElementById('newConvModal').classList.add('open'); }
+  function closeNewConv() { document.getElementById('newConvModal').classList.remove('open'); }
+  function startConv() {
+    var to = document.getElementById('ncTo').value.trim();
+    var from = document.getElementById('ncFrom').value.trim() || cfg.from;
+    if (!to) { toast('Enter a destination number', false); return; }
+    closeNewConv();
+    var c = { id: 'local_' + Date.now(), to: to, from: from, msgs: [], type: 'sms', label: to };
+    convs.unshift(c);
+    renderConvList();
+    selectConv(c);
+    document.getElementById('ncTo').value = '';
+    document.getElementById('ncFrom').value = '';
+  }
+
+  /* ── Load conversations ── */
+  async function loadConversations() {
+    if (!cfg.url || !cfg.token) return;
+    showLoading();
+    try {
+      var params = new URLSearchParams({ object: 'message', action: 'read', limit: '100', order: 'time_start DESC' });
+      if (cfg.domain) params.append('domain', cfg.domain);
+      if (cfg.user) params.append('user', cfg.user);
+      var res = await fetch(cfg.url + '/?' + params, { headers: { Authorization: 'Bearer ' + cfg.token } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var msgs = Array.isArray(data) ? data : (data.message || data.messages || data.data || []);
+      if (Array.isArray(msgs) && msgs.length) {
+        buildConvsFromMessages(msgs);
+      } else {
+        renderConvList();
+        toast('Connected — no messages found yet', true);
+      }
+    } catch(e) {
+      toast('Failed to load: ' + e.message, false);
+      renderConvList();
+    }
+  }
+
+  function buildConvsFromMessages(msgs) {
+    var map = {};
+    msgs.forEach(function(m) {
+      var key = m.session_id || m.destination || m.from_num || 'unknown';
+      if (!map[key]) {
+        map[key] = {
+          id: key,
+          session_id: m.session_id || null,
+          to: m.destination || m.from_num || key,
+          from: m.from_num || cfg.from,
+          type: m.type || 'sms',
+          label: m.destination || m.from_num || key,
+          msgs: []
+        };
+      }
+      map[key].msgs.push(m);
+    });
+    var existing = {};
+    convs.forEach(function(c) { existing[c.id] = c; });
+    Object.keys(map).forEach(function(k) {
+      if (existing[k]) {
+        existing[k].msgs = map[k].msgs;
+        existing[k].session_id = map[k].session_id || existing[k].session_id;
+      } else {
+        convs.unshift(map[k]);
+      }
+    });
+    convs.sort(function(a, b) {
+      var la = a.msgs.length ? (a.msgs[a.msgs.length-1].time_start || 0) : 0;
+      var lb = b.msgs.length ? (b.msgs[b.msgs.length-1].time_start || 0) : 0;
+      return lb - la;
+    });
+    renderConvList();
+    if (active) renderMsgs();
+  }
+
+  function showLoading() {
+    var el = document.getElementById('convList');
+    el.innerHTML = '<div class="loading-row"><div class="spinner"></div>Loading…</div>';
+  }
+
+  /* ── Render sidebar ── */
+  function renderConvList() {
+    var el = document.getElementById('convList');
+    if (!convs.length) {
+      el.innerHTML = '<div class="no-convs">no conversations yet</div>';
+      return;
+    }
+    el.innerHTML = '';
+    convs.forEach(function(c) {
+      var last = c.msgs.length ? c.msgs[c.msgs.length - 1] : null;
+      var preview = last ? (last.message || last.body || '[media]') : 'new conversation';
+      var time = last && last.time_start ? fmtTime(last.time_start) : '';
+      var typeTag = c.type === 'mms' ? '<span class="type-tag mms">MMS</span>' : '';
+      var isActive = active && active.id === c.id;
+      var div = document.createElement('div');
+      div.className = 'conv-item' + (isActive ? ' active' : '');
+      div.innerHTML =
+        '<div class="conv-row1">' +
+          '<span class="conv-num">' + esc(c.label || c.to) + typeTag + '</span>' +
+          '<span class="conv-time">' + time + '</span>' +
+        '</div>' +
+        '<div class="conv-preview">' + esc(preview) + '</div>';
+      div.addEventListener('click', function() { selectConv(c); });
+      el.appendChild(div);
+    });
+  }
+
+  /* ── Select conversation ── */
+  function selectConv(c) {
+    active = c;
+    renderConvList();
+    document.getElementById('emptyChat').style.display = 'none';
+    var ac = document.getElementById('activeChat');
+    ac.style.display = 'flex';
+    document.getElementById('chatToNum').textContent = c.to || c.label || '?';
+    document.getElementById('chatFromNum').textContent = c.from || cfg.from || '—';
+    var tag = document.getElementById('chatTypeTag');
+    tag.textContent = c.type ? c.type.toUpperCase() : 'SMS';
+    tag.className = 'type-tag' + (c.type === 'mms' ? ' mms' : '');
+    renderMsgs();
+    if (cfg.url && cfg.token && c.session_id) fetchMsgs(c);
+  }
+
+  /* ── Fetch messages for active conv ── */
+  async function fetchMsgs(c) {
+    try {
+      var params = new URLSearchParams({ object: 'message', action: 'read', limit: '200' });
+      if (cfg.domain) params.append('domain', cfg.domain);
+      if (cfg.user) params.append('user', cfg.user);
+      if (c.session_id) params.append('session_id', c.session_id);
+      var res = await fetch(cfg.url + '/?' + params, { headers: { Authorization: 'Bearer ' + cfg.token } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var msgs = Array.isArray(data) ? data : (data.message || data.messages || data.data || []);
+      if (Array.isArray(msgs)) {
+        c.msgs = msgs;
+        if (active && active.id === c.id) renderMsgs();
+        renderConvList();
+      }
+    } catch(e) { toast('Failed to refresh: ' + e.message, false); }
+  }
+
+  function refreshActive() {
+    if (!active) return;
+    if (active.session_id) fetchMsgs(active);
+    else toast('No session ID — send a message first', false);
+  }
+
+  function deleteConv() {
+    if (!active) return;
+    convs = convs.filter(function(c) { return c.id !== active.id; });
+    active = null;
+    document.getElementById('activeChat').style.display = 'none';
+    document.getElementById('emptyChat').style.display = 'flex';
+    renderConvList();
+    toast('Conversation removed', true);
+  }
+
+  /* ── Render messages ── */
+  function renderMsgs() {
+    var el = document.getElementById('msgsArea');
+    if (!active || !active.msgs.length) {
+      el.innerHTML = '<div style="text-align:center;padding:24px;font-family:var(--mono);font-size:11px;color:var(--text3)">no messages yet — say hello</div>';
+      return;
+    }
+    el.innerHTML = '';
+    active.msgs.forEach(function(m) {
+      var isOut = m.direction === 'out' || m.from_num === cfg.from || m.sender === cfg.user || m.type_direction === 'out';
+      var g = document.createElement('div');
+      g.className = 'msg-group ' + (isOut ? 'out' : 'in');
+      var time = m.time_start ? fmtTime(m.time_start) : '';
+      var typeLabel = m.type === 'mms' ? '<span class="type-tag mms" style="margin-left:4px">MMS</span>' : '';
+      var text = m.message || m.body || '[media]';
+      g.innerHTML =
+        '<div class="bubble ' + (isOut ? 'out' : 'in') + '">' + esc(text) + '</div>' +
+        '<div class="msg-meta">' + time + typeLabel + '</div>';
+      el.appendChild(g);
+    });
+    el.scrollTop = el.scrollHeight;
+  }
+
+  /* ── Send message ── */
+  async function sendMsg() {
+    if (!cfg.url || !cfg.token) { toast('Configure PBX settings first', false); return; }
+    if (!active) { toast('Select a conversation first', false); return; }
+    var text = document.getElementById('msgInput').value.trim();
+    if (!text && !pendingFile) { toast('Type a message or attach a file', false); return; }
+    var btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    try {
+      var fd = new FormData();
+      fd.append('object', 'message');
+      fd.append('action', 'create');
+      fd.append('from_num', active.from || cfg.from);
+      fd.append('destination', active.to);
+      if (cfg.domain) fd.append('domain', cfg.domain);
+      if (cfg.user) fd.append('user', cfg.user);
+      if (active.session_id) fd.append('session_id', active.session_id);
+      if (pendingFile) {
+        fd.append('type', 'mms');
+        fd.append('file', pendingFile);
+        fd.append('mime_type', pendingFile.type);
+        fd.append('size', pendingFile.size);
+        if (text) fd.append('message', text);
+      } else {
+        fd.append('type', 'sms');
+        fd.append('message', text);
+      }
+      var res = await fetch(cfg.url + '/', { method: 'POST', headers: { Authorization: 'Bearer ' + cfg.token }, body: fd });
+      var data = {};
+      try { data = await res.json(); } catch(e) {}
+      if (res.ok) {
+        var m = {
+          message: text || '[media]',
+          from_num: active.from || cfg.from,
+          direction: 'out',
+          type: pendingFile ? 'mms' : 'sms',
+          time_start: Math.floor(Date.now() / 1000)
+        };
+        if (data.session_id && !active.session_id) active.session_id = data.session_id;
+        active.msgs.push(m);
+        active.type = m.type;
+        renderMsgs();
+        renderConvList();
+        document.getElementById('msgInput').value = '';
+        document.getElementById('msgInput').style.height = '38px';
+        clearAttach();
+        toast('Sent', true);
+      } else {
+        toast('Send failed: ' + (data.message || data.error || res.status), false);
+      }
+    } catch(e) { toast('Network error: ' + e.message, false); }
+    btn.disabled = false;
+  }
+
+  /* ── Compose helpers ── */
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+  }
+  function autoResize(el) {
+    el.style.height = '38px';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+  function handleFile(input) {
+    var f = input.files[0];
+    if (!f) return;
+    pendingFile = f;
+    document.getElementById('attachBar').style.display = 'flex';
+    document.getElementById('attachName').textContent = f.name;
+    document.getElementById('attachSize').textContent = '(' + Math.round(f.size / 1024) + ' KB)';
+    if (active) {
+      var tag = document.getElementById('chatTypeTag');
+      tag.textContent = 'MMS';
+      tag.className = 'type-tag mms';
+    }
+  }
+  function clearAttach() {
+    pendingFile = null;
+    document.getElementById('attachBar').style.display = 'none';
+    document.getElementById('fileInput').value = '';
+    if (active) {
+      var tag = document.getElementById('chatTypeTag');
+      tag.textContent = 'SMS';
+      tag.className = 'type-tag';
+    }
+  }
+
+  /* ── Utilities ── */
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = String(s);
+    return d.innerHTML;
+  }
+  function fmtTime(ts) {
+    var d = new Date(ts * 1000);
+    var now = new Date();
+    var sameDay = d.toDateString() === now.toDateString();
+    if (sameDay) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }
+  function toast(msg, ok) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show ' + (ok ? 'ok' : 'err');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { el.className = 'toast'; }, 3500);
+  }
+
+  /* ── Init ── */
+  loadCfg();
+  if (cfg.url && cfg.token) loadConversations();
+</script>
+</body>
+</html>
