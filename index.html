@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upscale Text Messenger</title>
+    <title>Upscale VoIP Text Messenger</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,326 +13,529 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f7;
             height: 100vh;
             overflow: hidden;
-            background: #ffffff;
         }
 
-        .container {
-            height: 100vh;
+        .app-container {
             display: flex;
             flex-direction: column;
+            height: 100vh;
         }
 
+        /* Header */
         .header {
-            background: #97499c;
-            padding: 20px 30px;
+            background: linear-gradient(135deg, #4a5568 0%, #5a6a7a 100%);
+            padding: 12px 24px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 16px rgba(151, 73, 156, 0.2);
+            align-items: center;
+            color: white;
         }
 
-        .header-left {
+        .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .logo {
+        .user-avatar {
+            width: 40px;
             height: 40px;
-            width: auto;
-            border-radius: 8px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #4a5568;
         }
 
-        .header h1 {
-            color: white;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .new-message-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
+        .user-details h3 {
             font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-bottom: 2px;
         }
 
-        .new-message-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .user-details p {
+            font-size: 12px;
+            color: #a0aec0;
         }
 
-        .main-content {
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(72, 187, 120, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #48bb78;
+            border-radius: 50%;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .on-call-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(229, 62, 62, 0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: #fc8181;
+        }
+
+        .on-call-indicator i {
+            color: #fc8181;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .logo {
+            height: 30px;
+        }
+
+        /* Main Layout */
+        .main-container {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
+        /* Sidebar */
         .sidebar {
-            width: 350px;
-            background: rgba(151, 73, 156, 0.05);
-            border-right: 1px solid rgba(151, 73, 156, 0.1);
+            width: 240px;
+            background: #e2e8f0;
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
         }
 
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid rgba(151, 73, 156, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sidebar-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #97499c;
-        }
-
-        .add-contact-btn {
-            background: rgba(151, 73, 156, 0.1);
-            color: #97499c;
-            border: 1px solid rgba(151, 73, 156, 0.2);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .add-contact-btn:hover {
-            background: rgba(151, 73, 156, 0.2);
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(151, 73, 156, 0.1);
-        }
-
-        .tab {
+        .nav-menu {
             flex: 1;
-            padding: 15px;
-            background: transparent;
-            border: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            margin: 4px 12px;
+            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            color: #4a5568;
             font-size: 14px;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s ease;
-            border-bottom: 2px solid transparent;
         }
 
-        .tab.active {
-            color: #97499c;
-            border-bottom: 2px solid #97499c;
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
-        .tab-content {
-            flex: 1;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .conversation-item, .contact-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(151, 73, 156, 0.05);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .conversation-item:hover, .contact-item:hover {
-            background: rgba(151, 73, 156, 0.08);
-        }
-
-        .conversation-item.active {
-            background: rgba(151, 73, 156, 0.12);
-        }
-
-        .conversation-name, .contact-name {
+        .nav-item.active {
+            background: white;
+            color: #5a67d8;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
         }
 
-        .conversation-preview, .contact-phone {
-            font-size: 13px;
-            color: #666;
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            color: #805ad5;
         }
 
-        .conversation-time {
-            font-size: 12px;
-            color: #999;
+        .sidebar-footer {
+            padding: 0 20px;
+            margin-top: auto;
         }
 
-        .contact-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .message-btn {
-            background: #97499c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .message-btn:hover {
-            background: #7a3d7e;
-        }
-
-        .chat-area {
+        /* Content Area */
+        .content-area {
             flex: 1;
+            background: #f7fafc;
+            position: relative;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Floating Chat Window */
+        .chat-window {
+            position: fixed;
+            right: 60px;
+            bottom: 80px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
-            background: rgba(151, 73, 156, 0.02);
-        }
-
-        .empty-state {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 16px;
-        }
-
-        .active-chat {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-        }
-
-        .active-chat.active {
-            display: flex;
+            overflow: hidden;
         }
 
         .chat-header {
-            padding: 20px 30px;
-            background: rgba(151, 73, 156, 0.05);
-            border-bottom: 1px solid rgba(151, 73, 156, 0.1);
+            background: linear-gradient(135deg, #5a67d8 0%, #805ad5 100%);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
         }
 
-        .chat-contact {
-            font-weight: 600;
-            color: #333;
-            font-size: 18px;
+        .chat-contact-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .chat-phone {
+        .chat-contact-info i {
             font-size: 14px;
-            color: #666;
-            margin-top: 4px;
         }
 
-        .messages-container {
+        .chat-contact-info span {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-actions button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .chat-messages {
             flex: 1;
+            padding: 20px;
             overflow-y: auto;
-            padding: 20px 30px;
+            background: #f8f9fa;
         }
 
         .message {
-            margin-bottom: 15px;
             display: flex;
-            flex-direction: column;
+            margin-bottom: 16px;
         }
 
         .message.sent {
-            align-items: flex-end;
+            justify-content: flex-end;
         }
 
         .message.received {
-            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 75%;
         }
 
         .message-bubble {
-            max-width: 60%;
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 18px;
             font-size: 14px;
             line-height: 1.4;
         }
 
-        .message.sent .message-bubble {
-            background: #97499c;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
         .message.received .message-bubble {
-            background: #f0f0f0;
-            color: #333;
+            background: #e2e8f0;
+            color: #2d3748;
             border-bottom-left-radius: 4px;
         }
 
-        .message-time {
-            font-size: 11px;
-            color: #999;
-            margin-top: 4px;
+        .message.sent .message-bubble {
+            background: #d6bcfa;
+            color: #2d3748;
+            border-bottom-right-radius: 4px;
         }
 
-        .message-input-area {
-            padding: 20px 30px;
-            background: rgba(151, 73, 156, 0.05);
-            border-top: 1px solid rgba(151, 73, 156, 0.1);
+        .message-header {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
-        .message-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid rgba(151, 73, 156, 0.2);
-            border-radius: 8px;
-            font-size: 14px;
-            resize: none;
-            min-height: 44px;
-            max-height: 120px;
-            font-family: inherit;
-        }
-
-        .message-input:focus {
-            outline: none;
-            border-color: #97499c;
-        }
-
-        .send-btn {
-            background: #97499c;
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #805ad5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 12px;
+        }
+
+        .message-author {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            padding: 16px 20px;
+            background: #9fa8da;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-input-container button {
+            background: none;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            color: #5a67d8;
+            font-size: 18px;
             cursor: pointer;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
             font-size: 14px;
-            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .chat-input::placeholder {
+            color: #718096;
+        }
+
+        /* Bottom Actions */
+        .bottom-actions {
+            position: fixed;
+            bottom: 30px;
+            left: 280px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .keypad-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #5a67d8;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(90, 103, 216, 0.4);
             transition: all 0.3s ease;
         }
 
-        .send-btn:hover {
-            background: #7a3d7e;
+        .keypad-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(90, 103, 216, 0.5);
         }
 
-        .send-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        .ongoing-call {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #5a67d8;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
         }
 
+        .ongoing-call i {
+            color: #48bb78;
+        }
+
+        .ongoing-call-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ongoing-call-info span:first-child {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .ongoing-call-info span:last-child {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .ongoing-call-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ongoing-call-actions button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .new-message-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 2px solid #805ad5;
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: #805ad5;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-message-btn:hover {
+            background: #805ad5;
+            color: white;
+        }
+
+        .new-message-btn i {
+            font-size: 16px;
+        }
+
+        /* Contact List Panel */
+        .contacts-panel {
+            position: fixed;
+            left: 260px;
+            top: 80px;
+            width: 320px;
+            height: calc(100vh - 140px);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .contacts-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .contacts-header h3 {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f7fafc;
+            padding: 10px 14px;
+            border-radius: 10px;
+        }
+
+        .search-box i {
+            color: #a0aec0;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .contacts-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .contact-item:hover {
+            background: #f7fafc;
+        }
+
+        .contact-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5a67d8, #805ad5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .contact-info h4 {
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+
+        .contact-info p {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .contact-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .contact-actions button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #e2e8f0;
+            color: #5a67d8;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .contact-actions button:hover {
+            background: #5a67d8;
+            color: white;
+        }
+
+        /* New Message Modal */
         .modal {
             display: none;
             position: fixed;
@@ -339,10 +543,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .modal.active {
@@ -351,188 +555,348 @@
 
         .modal-content {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 400px;
-            max-width: 90%;
-            box-shadow: 0 8px 32px rgba(151, 73, 156, 0.2);
-            border: 1px solid rgba(151, 73, 156, 0.1);
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        .modal-header h3 {
+            font-size: 18px;
+            color: #2d3748;
         }
 
-        .form-label {
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #a0aec0;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
             display: block;
             font-size: 14px;
-            font-weight: 500;
-            color: #333;
+            color: #4a5568;
             margin-bottom: 6px;
+            font-weight: 500;
         }
 
-        .form-input {
+        .form-group input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid rgba(151, 73, 156, 0.2);
-            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 14px;
-            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: #97499c;
+        .form-group input:focus {
+            border-color: #805ad5;
         }
 
         .modal-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 24px;
         }
 
         .btn {
             flex: 1;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
             font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
         .btn-primary {
-            background: #97499c;
+            background: linear-gradient(135deg, #5a67d8, #805ad5);
             color: white;
-            border: none;
         }
 
         .btn-primary:hover {
-            background: #7a3d7e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(90, 103, 216, 0.4);
         }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #ddd;
+            background: #e2e8f0;
+            color: #4a5568;
         }
 
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: #cbd5e0;
         }
 
-        .loading {
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #a0aec0;
             text-align: center;
-            padding: 20px;
-            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #cbd5e0;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* Hide elements by default */
+        .contacts-panel {
+            display: none;
+        }
+
+        .contacts-panel.active {
+            display: flex;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e2e8f0;
+            border-top-color: #805ad5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-left">
-                <img src="logo.png" alt="Upscale VoIP" class="logo">
-                <h1>Text Messenger</h1>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h3>John Doe</h3>
+                    <p>Ext. 102</p>
+                </div>
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>Available</span>
+                </div>
             </div>
-            <button class="new-message-btn" onclick="openNewMessage()">+ New Message</button>
+            
+            <div class="header-actions">
+                <div class="on-call-indicator" id="onCallIndicator" style="display: none;">
+                    <i class="fas fa-phone"></i>
+                    <span>On Call</span>
+                </div>
+                <button class="settings-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <img src="logo.png" alt="Upscale VoIP" class="logo" onerror="this.style.display='none'">
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <div class="nav-item" onclick="switchTab('contacts')">
+                        <i class="fas fa-address-book"></i>
+                        <span>Contacts</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('history')">
+                        <i class="fas fa-history"></i>
+                        <span>Call History</span>
+                    </div>
+                    <div class="nav-item active" onclick="switchTab('messages')">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Messages</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('voicemail')">
+                        <i class="fas fa-voicemail"></i>
+                        <span>Voicemail</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('park')">
+                        <i class="fas fa-parking"></i>
+                        <span>Call Park</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('rules')">
+                        <i class="fas fa-ruler"></i>
+                        <span>Answering Rules</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('greeting')">
+                        <i class="fas fa-hand-sparkles"></i>
+                        <span>Greeting</span>
+                    </div>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <div class="nav-item" onclick="openSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                    <div class="nav-item" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area" id="contentArea">
+                <!-- Contacts Panel -->
+                <div class="contacts-panel" id="contactsPanel">
+                    <div class="contacts-header">
+                        <h3>Contacts</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search contacts..." id="contactSearch">
+                        </div>
+                    </div>
+                    <div class="contacts-list" id="contactsList">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <span>Loading contacts...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-comments"></i>
+                    <p>Select a contact or start a new conversation</p>
+                </div>
+            </main>
         </div>
 
-        <div class="main-content">
-            <div class="sidebar">
-                <div class="sidebar-header">
-                    <div class="sidebar-title">Messages</div>
-                    <button class="add-contact-btn" onclick="openAddContact()">+ Add Contact</button>
+        <!-- Floating Chat Window -->
+        <div class="chat-window" id="chatWindow" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-contact-info">
+                    <i class="fas fa-phone"></i>
+                    <span id="chatContactName">John Doe</span>
+                    <span id="chatContactPhone">(845) 444-2343</span>
                 </div>
-                
-                <div class="tabs">
-                    <button class="tab active" onclick="switchTab('conversations')">Conversations</button>
-                    <button class="tab" onclick="switchTab('contacts')">Contacts</button>
+                <div class="chat-actions">
+                    <button onclick="minimizeChat()"><i class="fas fa-minus"></i></button>
+                    <button onclick="maximizeChat()"><i class="fas fa-expand"></i></button>
+                    <button onclick="closeChat()"><i class="fas fa-times"></i></button>
                 </div>
-
-                <div class="tab-content active" id="conversations-tab">
-                    <div id="conversationList">
-                        <div class="loading">Loading conversations...</div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message received">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="message-avatar">JD</div>
+                            <span class="message-author">John Doe</span>
+                        </div>
+                        <div class="message-bubble">Hello!</div>
                     </div>
                 </div>
-
-                <div class="tab-content" id="contacts-tab">
-                    <div id="contactsList">
-                        <div class="loading">Loading contacts...</div>
+                <div class="message sent">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">Annie</span>
+                            <div class="message-avatar">A</div>
+                        </div>
+                        <div class="message-bubble">Hi John! How r u?</div>
                     </div>
                 </div>
             </div>
+            
+            <div class="chat-input-container">
+                <button onclick="attachFile()"><i class="fas fa-paperclip"></i></button>
+                <input type="text" class="chat-input" id="messageInput" placeholder="Type a message" onkeypress="handleMessageKeypress(event)">
+                <button onclick="sendMessage()"><i class="fas fa-smile"></i></button>
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
 
-            <div class="chat-area">
-                <div class="empty-state" id="emptyState">
-                    Select a conversation to start messaging
+        <!-- Bottom Actions -->
+        <div class="bottom-actions">
+            <button class="keypad-btn" onclick="openKeypad()">
+                <i class="fas fa-th"></i>
+            </button>
+            
+            <div class="ongoing-call" id="ongoingCall" style="display: none;">
+                <i class="fas fa-phone"></i>
+                <div class="ongoing-call-info">
+                    <span>Danny B.</span>
+                    <span>(845) 999-0000</span>
                 </div>
-                <div class="active-chat" id="activeChat">
-                    <div class="chat-header">
-                        <div class="chat-contact" id="chatContact"></div>
-                        <div class="chat-phone" id="chatPhone"></div>
-                    </div>
-                    <div class="messages-container" id="messagesContainer"></div>
-                    <div class="message-input-area">
-                        <textarea class="message-input" id="messageInput" placeholder="Type your message..." rows="1"></textarea>
-                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
-                    </div>
+                <div class="ongoing-call-actions">
+                    <button><i class="fas fa-microphone"></i></button>
+                    <button><i class="fas fa-pause"></i></button>
+                    <button onclick="endCall()"><i class="fas fa-phone-slash"></i></button>
                 </div>
             </div>
+            
+            <button class="new-message-btn" onclick="openNewMessageModal()">
+                <i class="fas fa-plus"></i>
+                <span>New Message</span>
+            </button>
         </div>
     </div>
 
     <!-- New Message Modal -->
     <div class="modal" id="newMessageModal">
         <div class="modal-content">
-            <div class="modal-title">New Message</div>
-            <div class="form-group">
-                <label class="form-label">Phone Number</label>
-                <input type="text" class="form-input" id="newMessagePhone" placeholder="Enter phone number">
+            <div class="modal-header">
+                <h3>New Message</h3>
+                <button class="close-modal" onclick="closeNewMessageModal()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="form-group">
-                <label class="form-label">Contact Name (Optional)</label>
-                <input type="text" class="form-input" id="newMessageName" placeholder="Enter contact name">
+                <label>To</label>
+                <input type="text" id="newMessagePhone" placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <input type="text" id="newMessageText" placeholder="Type your message">
             </div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeNewMessage()">Cancel</button>
-                <button class="btn btn-primary" onclick="createNewMessage()">Send Message</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Contact Modal -->
-    <div class="modal" id="addContactModal">
-        <div class="modal-content">
-            <div class="modal-title">Add New Contact</div>
-            <div class="form-group">
-                <label class="form-label">Contact Name</label>
-                <input type="text" class="form-input" id="addContactName" placeholder="Enter contact name">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Phone Number</label>
-                <input type="text" class="form-input" id="addContactPhone" placeholder="Enter phone number">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email (Optional)</label>
-                <input type="email" class="form-input" id="addContactEmail" placeholder="Enter email address">
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeAddContact()">Cancel</button>
-                <button class="btn btn-primary" onclick="addNewContact()">Add Contact</button>
+                <button class="btn btn-secondary" onclick="closeNewMessageModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendNewMessage()">Send</button>
             </div>
         </div>
     </div>
 
     <script>
-        // RingLogix API Configuration
+        // Configuration
         const config = {
             url: 'https://api.ringlogix.com/pbx/v1',
             token: '097329c4bf8fa11b85a7a8a637f262dd',
@@ -541,125 +905,67 @@
             phone: '8454442343'
         };
 
-        let conversations = [];
+        // State
         let contacts = [];
+        let conversations = [];
         let activeConversation = null;
+        let activeTab = 'messages';
 
         // Initialize
         window.onload = function() {
-            loadConversations();
+            console.log('Upscale VoIP Text Messenger loaded');
             loadContacts();
             setupEventListeners();
         };
 
+        // Setup event listeners
         function setupEventListeners() {
-            // Message input events
-            const messageInput = document.getElementById('messageInput');
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            // Modal backdrop clicks
-            document.getElementById('newMessageModal').addEventListener('click', function(e) {
-                if (e.target === this) closeNewMessage();
-            });
-
-            document.getElementById('addContactModal').addEventListener('click', function(e) {
-                if (e.target === this) closeAddContact();
+            // Contact search
+            document.getElementById('contactSearch').addEventListener('input', function(e) {
+                filterContacts(e.target.value);
             });
         }
 
-        // Tab Management
+        // Navigation
         function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            activeTab = tab;
             
-            if (tab === 'conversations') {
-                document.querySelector('.tab:nth-child(1)').classList.add('active');
-                document.getElementById('conversations-tab').classList.add('active');
-            } else {
-                document.querySelector('.tab:nth-child(2)').classList.add('active');
-                document.getElementById('contacts-tab').classList.add('active');
-            }
-        }
-
-        // Load Conversations from RingLogix API
-        async function loadConversations() {
-            try {
-                const params = new URLSearchParams({
-                    object: 'message',
-                    action: 'read',
-                    limit: '100',
-                    order: 'time_start DESC',
-                    domain: config.domain,
-                    user: config.user
-                });
-
-                const response = await fetch(config.url + '?' + params, {
-                    headers: {
-                        'Authorization': 'Bearer ' + config.token
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const messages = Array.isArray(data) ? data : (data.message || data.messages || data.data || []);
-                    buildConversations(messages);
-                } else {
-                    renderConversations();
-                }
-            } catch (error) {
-                console.error('Error loading conversations:', error);
-                renderConversations();
-            }
-        }
-
-        function buildConversations(messages) {
-            const convMap = {};
-            
-            messages.forEach(msg => {
-                const key = msg.destination || msg.from_num || 'unknown';
-                if (!convMap[key]) {
-                    convMap[key] = {
-                        id: key,
-                        phone: key,
-                        name: key,
-                        lastMessage: msg.message || msg.body || '[Media]',
-                        lastTime: msg.time_start,
-                        messages: []
-                    };
-                }
-                convMap[key].messages.push(msg);
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
             });
-
-            conversations = Object.values(convMap);
-            renderConversations();
-        }
-
-        function renderConversations() {
-            const container = document.getElementById('conversationList');
+            event.target.closest('.nav-item').classList.add('active');
             
-            if (conversations.length === 0) {
-                container.innerHTML = '<div class="loading">No conversations yet</div>';
-                return;
+            // Show/hide panels
+            const contactsPanel = document.getElementById('contactsPanel');
+            const emptyState = document.getElementById('emptyState');
+            const chatWindow = document.getElementById('chatWindow');
+            
+            switch(tab) {
+                case 'contacts':
+                    contactsPanel.classList.add('active');
+                    emptyState.style.display = 'none';
+                    chatWindow.style.display = 'none';
+                    break;
+                case 'messages':
+                    contactsPanel.classList.remove('active');
+                    emptyState.style.display = 'flex';
+                    if (activeConversation) {
+                        chatWindow.style.display = 'flex';
+                    }
+                    break;
+                default:
+                    contactsPanel.classList.remove('active');
+                    emptyState.style.display = 'flex';
+                    emptyState.innerHTML = `
+                        <i class="fas fa-tools"></i>
+                        <p>${tab.charAt(0).toUpperCase() + tab.slice(1)} feature coming soon</p>
+                    `;
+                    chatWindow.style.display = 'none';
             }
-
-            container.innerHTML = conversations.map(conv => `
-                <div class="conversation-item ${activeConversation && activeConversation.id === conv.id ? 'active' : ''}" 
-                     onclick="selectConversation('${conv.id}')">
-                    <div class="conversation-name">${conv.name}</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div class="conversation-preview">${conv.lastMessage}</div>
-                        <div class="conversation-time">${formatTime(conv.lastTime)}</div>
-                    </div>
-                </div>
-            `).join('');
         }
 
-        // Load Contacts from RingLogix API
+        // Load contacts from RingLogix API
         async function loadContacts() {
             try {
                 const params = new URLSearchParams({
@@ -681,64 +987,179 @@
                     contacts = Array.isArray(data) ? data : (data.contact || data.contacts || data.data || []);
                     renderContacts();
                 } else {
-                    renderContacts();
+                    console.error('Failed to load contacts:', response.status);
+                    // Load sample contacts for demo
+                    loadSampleContacts();
                 }
             } catch (error) {
                 console.error('Error loading contacts:', error);
-                renderContacts();
+                loadSampleContacts();
             }
         }
 
+        // Load sample contacts for demo
+        function loadSampleContacts() {
+            contacts = [
+                { id: '1', name: 'John Doe', phone: '8454442343', email: 'john@example.com' },
+                { id: '2', name: 'Annie Smith', phone: '8455551234', email: 'annie@example.com' },
+                { id: '3', name: 'Danny Brown', phone: '8459990000', email: 'danny@example.com' }
+            ];
+            renderContacts();
+        }
+
+        // Render contacts
         function renderContacts() {
             const container = document.getElementById('contactsList');
             
             if (contacts.length === 0) {
-                container.innerHTML = '<div class="loading">No contacts found</div>';
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 40px;">
+                        <i class="fas fa-users"></i>
+                        <p>No contacts found</p>
+                    </div>
+                `;
                 return;
             }
 
             container.innerHTML = contacts.map(contact => `
-                <div class="contact-item">
-                    <div>
-                        <div class="contact-name">${contact.name || 'Unknown'}</div>
-                        <div class="contact-phone">${contact.phone || contact.number || contact.destination || ''}</div>
+                <div class="contact-item" onclick="startChat('${contact.id}')">
+                    <div class="contact-avatar">${getInitials(contact.name)}</div>
+                    <div class="contact-info">
+                        <h4>${contact.name || 'Unknown'}</h4>
+                        <p>${contact.phone || contact.number || ''}</p>
                     </div>
-                    <button class="message-btn" onclick="messageContact('${contact.phone || contact.number || contact.destination || ''}', '${contact.name || ''}')">Message</button>
+                    <div class="contact-actions" onclick="event.stopPropagation()">
+                        <button onclick="callContact('${contact.phone}')" title="Call">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button onclick="startChat('${contact.id}')" title="Message">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        // Conversation Management
-        function selectConversation(id) {
-            activeConversation = conversations.find(c => c.id === id);
-            if (activeConversation) {
-                renderConversations();
-                showChat();
-                loadMessages();
-            }
+        // Filter contacts
+        function filterContacts(searchTerm) {
+            const filtered = contacts.filter(contact => 
+                (contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (contact.phone && contact.phone.includes(searchTerm))
+            );
+            renderFilteredContacts(filtered);
         }
 
-        function showChat() {
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('activeChat').classList.add('active');
-            document.getElementById('chatContact').textContent = activeConversation.name;
-            document.getElementById('chatPhone').textContent = activeConversation.phone;
-        }
-
-        function loadMessages() {
-            const container = document.getElementById('messagesContainer');
+        // Render filtered contacts
+        function renderFilteredContacts(filteredContacts) {
+            const container = document.getElementById('contactsList');
             
-            if (!activeConversation || !activeConversation.messages || activeConversation.messages.length === 0) {
-                container.innerHTML = '<div class="loading">No messages yet</div>';
+            if (filteredContacts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 40px;">
+                        <i class="fas fa-search"></i>
+                        <p>No contacts found</p>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = activeConversation.messages.map(msg => {
-                const isSent = msg.direction === 'out' || msg.from_num === config.phone;
+            container.innerHTML = filteredContacts.map(contact => `
+                <div class="contact-item" onclick="startChat('${contact.id}')">
+                    <div class="contact-avatar">${getInitials(contact.name)}</div>
+                    <div class="contact-info">
+                        <h4>${contact.name || 'Unknown'}</h4>
+                        <p>${contact.phone || contact.number || ''}</p>
+                    </div>
+                    <div class="contact-actions" onclick="event.stopPropagation()">
+                        <button onclick="callContact('${contact.phone}')" title="Call">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button onclick="startChat('${contact.id}')" title="Message">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get initials from name
+        function getInitials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        // Start chat with contact
+        function startChat(contactId) {
+            const contact = contacts.find(c => c.id === contactId);
+            if (!contact) return;
+
+            activeConversation = {
+                id: contactId,
+                name: contact.name,
+                phone: contact.phone,
+                messages: []
+            };
+
+            document.getElementById('chatContactName').textContent = contact.name;
+            document.getElementById('chatContactPhone').textContent = contact.phone || '';
+            
+            document.getElementById('chatWindow').style.display = 'flex';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            loadMessages();
+        }
+
+        // Load messages
+        async function loadMessages() {
+            if (!activeConversation) return;
+
+            try {
+                const params = new URLSearchParams({
+                    object: 'message',
+                    action: 'read',
+                    destination: activeConversation.phone,
+                    limit: '50',
+                    domain: config.domain,
+                    user: config.user
+                });
+
+                const response = await fetch(config.url + '?' + params, {
+                    headers: {
+                        'Authorization': 'Bearer ' + config.token
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const messages = Array.isArray(data) ? data : (data.message || data.messages || []);
+                    renderMessages(messages);
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        // Render messages
+        function renderMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => {
+                const isSent = msg.from_num === config.phone || msg.direction === 'out';
                 return `
                     <div class="message ${isSent ? 'sent' : 'received'}">
-                        <div class="message-bubble">${msg.message || msg.body || '[Media]'}</div>
-                        <div class="message-time">${formatTime(msg.time_start)}</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                ${isSent ? '' : `<div class="message-avatar">${getInitials(msg.from_name || activeConversation.name)}</div>`}
+                                <span class="message-author">${isSent ? 'You' : (msg.from_name || activeConversation.name)}</span>
+                                ${isSent ? `<div class="message-avatar">Y</div>` : ''}
+                            </div>
+                            <div class="message-bubble">${msg.message || msg.body || ''}</div>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -746,17 +1167,15 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Send Message via RingLogix API
+        // Send message
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             
             if (!message || !activeConversation) {
+                alert('Please enter a message and select a contact');
                 return;
             }
-
-            const sendBtn = document.getElementById('sendBtn');
-            sendBtn.disabled = true;
 
             try {
                 const formData = new FormData();
@@ -778,157 +1197,137 @@
                 });
 
                 if (response.ok) {
-                    const newMessage = {
-                        message: message,
-                        direction: 'out',
-                        time_start: Math.floor(Date.now() / 1000)
-                    };
-                    
-                    activeConversation.messages.push(newMessage);
-                    activeConversation.lastMessage = message;
-                    activeConversation.lastTime = newMessage.time_start;
-                    
                     input.value = '';
-                    loadMessages();
-                    renderConversations();
+                    
+                    // Add message to UI
+                    const container = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message sent';
+                    messageDiv.innerHTML = `
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">You</span>
+                                <div class="message-avatar">Y</div>
+                            </div>
+                            <div class="message-bubble">${message}</div>
+                        </div>
+                    `;
+                    container.appendChild(messageDiv);
+                    container.scrollTop = container.scrollHeight;
+                    
+                    alert('Message sent successfully!');
                 } else {
-                    alert('Failed to send message');
+                    alert('Failed to send message. Please try again.');
                 }
             } catch (error) {
                 console.error('Error sending message:', error);
-                alert('Network error sending message');
+                alert('Network error. Please check your connection.');
             }
-
-            sendBtn.disabled = false;
         }
 
-        // New Message Modal
-        function openNewMessage() {
+        // Handle enter key in message input
+        function handleMessageKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // New message modal
+        function openNewMessageModal() {
             document.getElementById('newMessageModal').classList.add('active');
         }
 
-        function closeNewMessage() {
+        function closeNewMessageModal() {
             document.getElementById('newMessageModal').classList.remove('active');
             document.getElementById('newMessagePhone').value = '';
-            document.getElementById('newMessageName').value = '';
+            document.getElementById('newMessageText').value = '';
         }
 
-        function createNewMessage() {
+        function sendNewMessage() {
             const phone = document.getElementById('newMessagePhone').value.trim();
-            const name = document.getElementById('newMessageName').value.trim() || phone;
-
-            if (!phone) {
-                alert('Please enter a phone number');
+            const message = document.getElementById('newMessageText').value.trim();
+            
+            if (!phone || !message) {
+                alert('Please enter both phone number and message');
                 return;
             }
 
-            let existing = conversations.find(c => c.phone === phone);
-            if (existing) {
-                selectConversation(existing.id);
-                closeNewMessage();
-                return;
-            }
-
-            const newConversation = {
-                id: Date.now().toString(),
-                name: name,
+            // Create temporary contact
+            activeConversation = {
+                id: 'temp-' + Date.now(),
+                name: phone,
                 phone: phone,
-                lastMessage: 'Start a conversation...',
-                lastTime: Math.floor(Date.now() / 1000),
                 messages: []
             };
 
-            conversations.unshift(newConversation);
-            renderConversations();
-            selectConversation(newConversation.id);
-            closeNewMessage();
+            document.getElementById('chatContactName').textContent = phone;
+            document.getElementById('chatContactPhone').textContent = phone;
+            document.getElementById('chatWindow').style.display = 'flex';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            closeNewMessageModal();
+            
+            // Send the message
+            document.getElementById('messageInput').value = message;
+            sendMessage();
         }
 
-        // Add Contact Modal
-        function openAddContact() {
-            document.getElementById('addContactModal').classList.add('active');
+        // Chat window controls
+        function minimizeChat() {
+            document.getElementById('chatWindow').style.height = '60px';
         }
 
-        function closeAddContact() {
-            document.getElementById('addContactModal').classList.remove('active');
-            document.getElementById('addContactName').value = '';
-            document.getElementById('addContactPhone').value = '';
-            document.getElementById('addContactEmail').value = '';
+        function maximizeChat() {
+            document.getElementById('chatWindow').style.height = '500px';
         }
 
-        function addNewContact() {
-            const name = document.getElementById('addContactName').value.trim();
-            const phone = document.getElementById('addContactPhone').value.trim();
-            const email = document.getElementById('addContactEmail').value.trim();
-
-            if (!name) {
-                alert('Please enter a contact name');
-                return;
-            }
-
-            if (!phone) {
-                alert('Please enter a phone number');
-                return;
-            }
-
-            let existing = contacts.find(c => c.phone === phone);
-            if (existing) {
-                alert('Contact with this phone number already exists!');
-                return;
-            }
-
-            const newContact = {
-                id: Date.now().toString(),
-                name: name,
-                phone: phone,
-                email: email
-            };
-
-            contacts.unshift(newContact);
-            renderContacts();
-            closeAddContact();
-            switchTab('contacts');
+        function closeChat() {
+            document.getElementById('chatWindow').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'flex';
+            activeConversation = null;
         }
 
-        function messageContact(phone, name) {
-            switchTab('conversations');
+        // Call functions
+        function callContact(phone) {
+            alert('Calling ' + phone + '... (Call feature would be implemented here)');
+            document.getElementById('ongoingCall').style.display = 'flex';
+            document.getElementById('onCallIndicator').style.display = 'flex';
+        }
 
-            let existing = conversations.find(c => c.phone === phone);
-            if (existing) {
-                selectConversation(existing.id);
-            } else {
-                const newConv = {
-                    id: phone,
-                    phone: phone,
-                    name: name,
-                    lastMessage: 'Start a conversation...',
-                    lastTime: Math.floor(Date.now() / 1000),
-                    messages: []
-                };
-                conversations.unshift(newConv);
-                renderConversations();
-                selectConversation(phone);
+        function endCall() {
+            document.getElementById('ongoingCall').style.display = 'none';
+            document.getElementById('onCallIndicator').style.display = 'none';
+        }
+
+        // Keypad
+        function openKeypad() {
+            alert('Keypad feature coming soon!');
+        }
+
+        // Settings
+        function openSettings() {
+            alert('Settings feature coming soon!');
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logged out successfully!');
+                location.reload();
             }
         }
 
-        // Utilities
-        function formatTime(timestamp) {
-            if (!timestamp) return '';
-            const date = new Date(timestamp * 1000);
-            const now = new Date();
-            const diff = now - date;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-            if (days === 0) {
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else if (days === 1) {
-                return 'Yesterday';
-            } else if (days < 7) {
-                return date.toLocaleDateString([], { weekday: 'short' });
-            } else {
-                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            }
+        // Attach file
+        function attachFile() {
+            alert('File attachment feature coming soon!');
         }
+
+        // Close modal on backdrop click
+        document.getElementById('newMessageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNewMessageModal();
+            }
+        });
     </script>
 </body>
 </html>
