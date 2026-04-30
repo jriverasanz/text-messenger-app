@@ -535,7 +535,7 @@
             color: white;
         }
 
-        /* New Message Modal */
+        /* New Message Modal - Chat Window Style */
         .modal {
             display: none;
             position: fixed;
@@ -555,68 +555,139 @@
 
         .modal-content {
             background: white;
-            border-radius: 16px;
-            width: 400px;
-            padding: 24px;
+            border-radius: 20px;
+            width: 420px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
 
         .modal-header {
+            background: linear-gradient(135deg, #5a67d8 0%, #805ad5 100%);
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            color: white;
         }
 
         .modal-header h3 {
-            font-size: 18px;
-            color: #2d3748;
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .modal-header-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-header-info i {
+            font-size: 14px;
+        }
+
+        .modal-actions-top {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-actions-top button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
         }
 
         .close-modal {
             background: none;
             border: none;
-            font-size: 20px;
-            color: #a0aec0;
+            font-size: 18px;
+            color: white;
             cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .close-modal:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 24px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             color: #4a5568;
-            margin-bottom: 6px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 12px 16px;
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group textarea:focus {
             border-color: #805ad5;
+            box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.1);
         }
 
-        .modal-actions {
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .attach-section {
+            margin-bottom: 20px;
+        }
+
+        .attach-section label {
+            display: block;
+            font-size: 13px;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .file-input-wrapper {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background: #f7fafc;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e2e8f0;
             display: flex;
+            justify-content: flex-end;
             gap: 12px;
-            margin-top: 24px;
         }
 
         .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 20px;
             border: none;
             font-size: 14px;
             font-weight: 600;
@@ -627,6 +698,9 @@
         .btn-primary {
             background: linear-gradient(135deg, #5a67d8, #805ad5);
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary:hover {
@@ -635,12 +709,12 @@
         }
 
         .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
+            background: #718096;
+            color: white;
         }
 
         .btn-secondary:hover {
-            background: #cbd5e0;
+            background: #4a5568;
         }
 
         /* Empty State */
@@ -875,22 +949,36 @@
     <div class="modal" id="newMessageModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>New Message</h3>
+                <div class="modal-header-info">
+                    <i class="fas fa-comment"></i>
+                    <h3>New Message</h3>
+                </div>
                 <button class="close-modal" onclick="closeNewMessageModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="form-group">
-                <label>To</label>
-                <input type="text" id="newMessagePhone" placeholder="Enter phone number">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>To</label>
+                    <input type="text" id="newMessagePhone" placeholder="Enter contact name or number">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="newMessageText" placeholder="Type your message here..."></textarea>
+                </div>
+                <div class="attach-section">
+                    <label>Attach Document</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="newMessageFile">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Message</label>
-                <input type="text" id="newMessageText" placeholder="Type your message">
-            </div>
-            <div class="modal-actions">
+            <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeNewMessageModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="sendNewMessage()">Send</button>
+                <button class="btn btn-primary" onclick="sendNewMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                    Send
+                </button>
             </div>
         </div>
     </div>
